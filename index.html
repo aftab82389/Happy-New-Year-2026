@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy New Year - Tap and Hold</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.8.0/fonts/remixicon.css"
+    rel="stylesheet"
+/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue&display=swap');
+
+    body,html {
+      margin:0; padding:0; height:100%;
+      background: radial-gradient(circle at center, #140026 20%, #050012 90%);
+      display:flex; justify-content:center; align-items:center;
+      font-family: 'Comic Neue', cursive, sans-serif;
+      color:#ddb7f0;
+      user-select:none;
+      overflow:hidden;
+    }
+    .card {
+      background: rgba(29, 11, 43, 0.85);
+      border-radius: 24px;
+      padding: 3rem 3rem 4rem;
+      width: 320px;
+      box-shadow: 0 0 35px rgba(240, 132, 214, 0.5);
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    .headline {
+      font-size: 1.9rem;
+      margin-bottom: 0.3rem;
+      user-select:none;
+      color:#E08BFF;
+    }
+    .subtitle {
+      margin-bottom: 2rem;
+      color: #9f7d9f;
+      font-size: 1.1rem;
+      user-select:none;
+    }
+    .message-text {
+      font-size: 1rem;
+      color: #c198d0;
+      user-select: none;
+      height: 28px;
+    }
+
+    /* Heart with SVG container */
+    .heart-circle {
+      margin: 0 auto 1.5rem;
+      width: 100px;
+      height: 100px;
+      position: relative;
+      cursor: pointer;
+      filter:drop-shadow(0px 0px 15px #FF4BB1);
+    }
+    
+    
+    /* SVG ring */
+    svg {
+      position: absolute;
+      top:0; left:0;
+      width: 100px;
+      height: 100px;
+      transform: rotate(-90deg);
+      pointer-events: none;
+      user-select:none;
+    }
+    circle.bg {
+      fill: none;
+      stroke: #4a3953;
+      stroke-width: 4;
+    }
+    circle.progress {
+      fill: none;
+      stroke: #f85ca4;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 283;  /* Circumference for r=45 */
+      stroke-dashoffset: 283;
+      transition: stroke-dashoffset 0.1s linear;
+    }
+
+    /* Upright heart shape with div */
+    .heart {
+      position: absolute;
+      top:50%;
+      left:50%;
+      transform: translate(-50%,-50%);
+      filter: drop-shadow(0 0 6px #ff78ab);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .heart i{
+      font-size: 50px;
+      
+    }
+    .active .heart,
+    .active .heart::before,
+    .active .heart::after {
+      background: #fc8eb6;
+    }
+  </style>
+</head>
+<body>
+  <div class="card" role="main" aria-label="New Year surprise message">
+    <h1 class="headline">A little surprise for you</h1>
+    <p class="subtitle">On this year begins</p>
+
+    <div id="heartCircle" class="heart-circle" role="button" tabindex="0" aria-pressed="false" title="Tap and hold">
+      <svg>
+        <circle class="bg" cx="50" cy="50" r="45"></circle>
+        <circle class="progress" cx="50" cy="50" r="45"></circle>
+      </svg>
+      <div class="heart"><i class="ri-poker-hearts-fill"></i></div>
+    </div>
+
+    <p id="messageText" class="message-text">Tap and hold</p>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+<script>
+  const heartCircle = document.getElementById('heartCircle');
+  const progressCircle = heartCircle.querySelector('circle.progress');
+  const messageText = document.getElementById('messageText');
+
+  const circumference = 2 * Math.PI * 45; // 2πr with r=45
+  progressCircle.style.strokeDasharray = circumference;
+  progressCircle.style.strokeDashoffset = circumference;
+
+  let holdTimeout = null;
+  let animationFrame = null;
+  let startTime = null;
+  const holdDuration = 1500; // milliseconds
+  const confettiDuration = 2000;
+
+  // Animate stroke-dashoffset from circumference -> 0 over holdDuration
+  function animateProgress(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const elapsed = timestamp - startTime;
+    const progress = Math.min(elapsed / holdDuration, 1);
+    const offset = circumference * (1 - progress);
+    progressCircle.style.strokeDashoffset = offset;
+
+    if (progress < 1) {
+      animationFrame = requestAnimationFrame(animateProgress);
+    } else {
+      onHoldComplete();
+    }
+  }
+
+  function onHoldComplete() {
+    heartCircle.classList.remove('loading');
+    heartCircle.classList.add('active');
+    heartCircle.setAttribute('aria-pressed', 'true');
+    messageText.textContent = 'Thank you for the love!';
+
+    // Confetti burst
+    const end = Date.now() + confettiDuration;
+
+    (function frame() {
+      confetti({
+        particleCount: 2,
+        angle: 60,
+        spread: 45,
+        origin: { x: 0 },
+  startVelocity: 25,
+  gravity: 0.25,
+  ticks: 32,
+  scalar: 0.85,
+  drift: -0.3,
+        colors: ['#f85ca4','#fc8eb6','#f78cb6','#ffadd2']
+      });
+      confetti({
+  particleCount: 2,
+  angle: 120,
+  spread: 45,
+  origin: { x: 1 },
+  startVelocity: 25,
+  gravity: 0.25,
+  ticks: 32,
+  scalar: 0.85,
+  drift: -0.3,
+
+  colors: ['#f85ca4','#fc8eb6','#f78cb6','#ffadd2']
+});
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    })();
+
+    // Redirect after confetti ends:
+    setTimeout(() => {
+      window.location.href = 'second.html';
+    }, confettiDuration + 500);
+  }
+
+  function startHold() {
+    if (holdTimeout) return; // Already holding
+
+    heartCircle.classList.add('loading');
+    heartCircle.setAttribute('aria-pressed', 'false');
+    messageText.textContent = 'Holding...';
+
+    startTime = null;
+    animationFrame = requestAnimationFrame(animateProgress);
+
+    holdTimeout = setTimeout(() => {
+      // handled by animateProgress on full progress
+      holdTimeout = null;
+    }, holdDuration);
+  }
+
+  function cancelHold() {
+    if (holdTimeout) {
+      clearTimeout(holdTimeout);
+      holdTimeout = null;
+    }
+    if(animationFrame) {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = null;
+    }
+    progressCircle.style.strokeDashoffset = circumference;
+    heartCircle.classList.remove('loading');
+    heartCircle.classList.remove('active');
+    heartCircle.setAttribute('aria-pressed', 'false');
+    messageText.textContent = 'Tap and hold';
+  }
+
+  // Mouse and Touch events
+  heartCircle.addEventListener('mousedown', (e) => { e.preventDefault(); startHold(); });
+  heartCircle.addEventListener('touchstart', (e) => { e.preventDefault(); startHold(); }, {passive:false});
+
+  heartCircle.addEventListener('mouseup', cancelHold);
+  heartCircle.addEventListener('mouseleave', cancelHold);
+  heartCircle.addEventListener('touchend', cancelHold);
+  heartCircle.addEventListener('touchcancel', cancelHold);
+
+  // Keyboard - space or enter instant success
+  heartCircle.addEventListener('keydown', e => {
+    if(e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      cancelHold();
+      heartCircle.classList.add('active');
+      heartCircle.setAttribute('aria-pressed', 'true');
+      messageText.textContent = 'Thank you for the love!';
+
+      const end = Date.now() + confettiDuration;
+      (function frame() {
+        confetti({
+          particleCount: 7,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: ['#f85ca4','#fc8eb6','#f78cb6','#ffadd2']
+        });
+        confetti({
+          particleCount: 7,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: ['#f85ca4','#fc8eb6','#f78cb6','#ffadd2']
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+
+      setTimeout(() => {
+        window.location.href = 'second.html';
+      }, confettiDuration + 500);
+    }
+  });
+
+</script>
+</body>
+  </html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy New Year Card</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue&display=swap');
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: radial-gradient(circle at center, #140026 20%, #050012 90%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Comic Neue', cursive, sans-serif;
+      color: #ddb7f0;
+      overflow: hidden;
+      user-select: none;
+      width:100%;
+      min-height: 100vh;
+    }
+
+    .card-container {
+      margin: 5px;
+      perspective: 1000px;
+      width: calc(100% - 50px);
+      height: 400px;
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.8s ease;
+      cursor: pointer;
+    }
+
+    .card.open {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 24px;
+      box-shadow: 0 0 35px rgba(240, 132, 214, 0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .card-face p{
+      color:#E08BFF;
+    }
+    .cover {
+      background: rgba(29, 11, 43, 0.85);
+      color: #ddb7f0;
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      background: radial-gradient(circle, #fff 1px, transparent 1px);
+      background-size: 20px 20px;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .cover h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      z-index: 1;
+    }
+
+    .cover .emoji {
+      font-size: 2rem;
+      margin-top: 1rem;
+      z-index: 1;
+    }
+
+    .inside {
+      background: rgba(29, 11, 43, 0.85);
+      transform: rotateY(180deg);
+      color: #c198d0;
+    }
+
+    .inside h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color:#E9E9E9;
+    }
+
+    .quote {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+      
+    }
+
+    .continue-button {
+      background: #f85ca4;
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-family: 'Comic Neue', cursive, sans-serif;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(240, 128, 141, 0.3);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 1rem;
+    }
+
+    .continue-button:hover {
+      background: #fc8eb6;
+      box-shadow: 0 0 20px rgba(240, 128, 141, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="card-container">
+    <div class="card" id="card">
+      <div class="card-face cover">
+        <h1>Happy New Year 2026</h1>
+        <p>Click to open your greeting card</p>
+        <div class="emoji">✨ ❤️ ✨</div>
+      </div>
+      <div class="card-face inside">
+        <h2>Happy New Year!</h2>
+        <div class="quote">"I hope this year brings you calm mornings, peaceful nights, and little moments that make you smile without any reason.<br>
+
+No matter what this year holds for you, I hope you always feel supported, valued, and understood.<br>  May every challenge turn into strength, every setback into a lesson, and every dream one step closer to reality."</div>
+       
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const card = document.getElementById('card');
+    card.addEventListener('click', () => {
+      card.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
